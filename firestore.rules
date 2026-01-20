@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // --- HELPER FUNCTIONS ---
+    
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if user is accessing their own data
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // --- COLLECTION RULES ---
+
+    // 1. User Data (Everything inside users/{uid}/...)
+    // STRICT RULE: Users can ONLY read/write their own data.
+    match /users/{userId}/{document=**} {
+      allow read, write: if isAuthenticated() && isOwner(userId);
+    }
+
+    // 2. Settings Collection (Global App Settings)
+    // Only allows users to read/write their SPECIFIC settings document
+    match /settings/{userId} {
+      allow read, write: if isAuthenticated() && isOwner(userId);
+    }
+    
+    // 3. Deny everything else by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
