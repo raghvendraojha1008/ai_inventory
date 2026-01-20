@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
 import { User } from 'firebase/auth';
-import { Search, Trash2, Edit2, AlertTriangle } , Edit2 } from 'lucide-react';
+import { Search, Trash2, Edit2, AlertTriangle } from 'lucide-react';
 import { ApiService } from '../../services/api';
 import { useUI } from '../../context/UIContext';
 import { AppSettings } from '../../types';
 import Header from '../common/Header';
+
+
 
 interface InventoryViewProps { user: User; settings: AppSettings; onAdd: () => void; onEdit: (item: any) => void; }
 
